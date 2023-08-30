@@ -5,6 +5,9 @@ import com.example.myqrcodeapp.model.QrData;
 import com.example.myqrcodeapp.service.QRCodeGenerator;
 import com.example.myqrcodeapp.util.QRCodeReader;
 import com.google.zxing.WriterException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,21 +24,29 @@ public class QRController {
     String qrCodeImagePath;
     @Value("${qr.file.extension}")
     String qrFileExtension;
-
+    @Autowired
+    QRCodeGenerator qrCodeGenerator;
+    Logger logger = LoggerFactory.getLogger(QRController.class);
     @PostMapping(value="/qrcode/",produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getQRCode(@RequestBody QrData qrData) {
+    public ResponseEntity<byte[]> createQRCode(@RequestBody QrData qrData) {
+        logger.info("Inside getQRCode ");
         byte[] image2 = new byte[0];
         try {
-            image2 = QRCodeGenerator.generateQRCodeImage(qrData.getQrText(), qrData.getWidht(), qrData.getHeight(), qrCodeImagePath+qrData.getQrId());
-            image2=QRCodeGenerator.getQRCodeImage(qrData.getQrText(), qrData.getWidht(), qrData.getHeight());
+            image2 = qrCodeGenerator.generateQRCodeImage(qrData.getQrText(), qrData.getWidht(), qrData.getHeight(), qrCodeImagePath+qrData.getQrId());
+            image2=qrCodeGenerator.getQRCodeImage(qrData.getQrText(), qrData.getWidht(), qrData.getHeight());
         } catch (WriterException | IOException e) {
+            logger.info("Inside catch createQRCode ");
+
             e.printStackTrace();
         }
+        logger.info("Exiting getQRCode....");
+
         return ResponseEntity.status(HttpStatus.OK).body(image2);
     }
 
     @GetMapping(value="/qrcode/{qrId}",produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> generateQRCode(@PathVariable("qrId") String qrId) {
+        logger.info("Inside generateQRCode ()....");
         byte[] image2 = new byte[0];
         String preQrCode;
         try {
@@ -45,8 +56,11 @@ public class QRController {
             image2 = QRCodeReader.decodeQRCodeCreated(file);
 
         } catch (  IOException e) {
+            logger.info("Inside generateQRCode ()--> catch block....");
+
             e.printStackTrace();
         }
+        logger.info("Exiting generateQRCode ()....");
         return ResponseEntity.status(HttpStatus.OK).body(image2);
     }
 
@@ -58,7 +72,7 @@ public class QRController {
 
         byte[] image2 = new byte[0];
         try {
-            image2 = QRCodeGenerator.getQRCodeImage(text, width, height);
+            image2 = qrCodeGenerator.getQRCodeImage(text, width, height);
 
         } catch (WriterException | IOException e) {
             e.printStackTrace();
