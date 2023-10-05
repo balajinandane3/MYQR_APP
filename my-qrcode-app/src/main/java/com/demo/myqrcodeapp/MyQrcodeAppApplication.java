@@ -1,4 +1,4 @@
-package com.example.myqrcodeapp;
+package com.demo.myqrcodeapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
