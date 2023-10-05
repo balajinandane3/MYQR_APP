@@ -1,4 +1,4 @@
-package com.example.myqrcodeapp.model;
+package com.demo.myqrcodeapp.model;
 
 public class QrData {
     int widht;

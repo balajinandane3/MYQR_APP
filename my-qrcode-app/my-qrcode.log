@@ -1,0 +1,6 @@
+2023-10-04T20:23:43.311+05:30  INFO 3936 --- [main] c.d.m.MyQrcodeAppApplicationTests        : Starting MyQrcodeAppApplicationTests using Java 20.0.2 with PID 3936 (started by Admin in D:\codebase\MYQR_APP\my-qrcode-app)
+2023-10-04T20:23:43.316+05:30  INFO 3936 --- [main] c.d.m.MyQrcodeAppApplicationTests        : No active profile set, falling back to 1 default profile: "default"
+2023-10-04T20:23:47.602+05:30  INFO 3936 --- [main] c.d.m.MyQrcodeAppApplicationTests        : Started MyQrcodeAppApplicationTests in 5.964 seconds (process running for 10.519)
+2023-10-04T20:25:07.710+05:30  INFO 1208 --- [main] c.d.m.MyQrcodeAppApplicationTests        : Starting MyQrcodeAppApplicationTests using Java 20.0.2 with PID 1208 (started by Admin in D:\codebase\MYQR_APP\my-qrcode-app)
+2023-10-04T20:25:07.714+05:30  INFO 1208 --- [main] c.d.m.MyQrcodeAppApplicationTests        : No active profile set, falling back to 1 default profile: "default"
+2023-10-04T20:25:11.706+05:30  INFO 1208 --- [main] c.d.m.MyQrcodeAppApplicationTests        : Started MyQrcodeAppApplicationTests in 4.709 seconds (process running for 7.195)

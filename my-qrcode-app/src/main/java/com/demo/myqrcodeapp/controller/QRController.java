@@ -1,9 +1,9 @@
 
-package com.example.myqrcodeapp.controller;
+package com.demo.myqrcodeapp.controller;
 
-import com.example.myqrcodeapp.model.QrData;
-import com.example.myqrcodeapp.service.QRCodeGenerator;
-import com.example.myqrcodeapp.util.QRCodeReader;
+import com.demo.myqrcodeapp.model.QrData;
+import com.demo.myqrcodeapp.util.QRCodeReader;
+import com.demo.myqrcodeapp.service.QRCodeGenerator;
 import com.google.zxing.WriterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +29,15 @@ public class QRController {
     Logger logger = LoggerFactory.getLogger(QRController.class);
     @PostMapping(value="/qrcode/",produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> createQRCode(@RequestBody QrData qrData) {
-        logger.info("Inside getQRCode ");
+        logger.info("Inside getQRCode with qrData:{}",qrData);
         byte[] image2 = new byte[0];
         try {
+            logger.info("calling qrCodeGenerator.generateQRCodeImage....");
             image2 = qrCodeGenerator.generateQRCodeImage(qrData.getQrText(), qrData.getWidht(), qrData.getHeight(), qrCodeImagePath+qrData.getQrId());
+            logger.info("calling qrCodeGenerator.getQRCodeImage....");
             image2=qrCodeGenerator.getQRCodeImage(qrData.getQrText(), qrData.getWidht(), qrData.getHeight());
         } catch (WriterException | IOException e) {
-            logger.info("Inside catch createQRCode ");
+            logger.info("Inside catch createQRCode Errorcause:{},ErroMessage:",e.getCause(),e.getMessage());
 
             e.printStackTrace();
         }
@@ -46,17 +48,18 @@ public class QRController {
 
     @GetMapping(value="/qrcode/{qrId}",produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> generateQRCode(@PathVariable("qrId") String qrId) {
-        logger.info("Inside generateQRCode ()....");
+        logger.info("Inside generateQRCode ().... for qrId:{}",qrId);
         byte[] image2 = new byte[0];
         String preQrCode;
         try {
             String filePath=qrCodeImagePath+qrId;
             File file = new File(filePath+qrFileExtension);
             if(file.exists())
-            image2 = QRCodeReader.decodeQRCodeCreated(file);
+                logger.info("File is present....");
+                image2 = QRCodeReader.decodeQRCodeCreated(file);
 
         } catch (  IOException e) {
-            logger.info("Inside generateQRCode ()--> catch block....");
+            logger.info("Exception occured ErrorCause:  {},ErrorMessage:   {}",e.getCause(),e.getMessage());
 
             e.printStackTrace();
         }
@@ -91,6 +94,11 @@ public class QRController {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+    @GetMapping(value="/")
+    public ResponseEntity<String> getHello(@PathVariable("qrId") String qrId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body("Welcome to My QrCode App....");
     }
 
 }

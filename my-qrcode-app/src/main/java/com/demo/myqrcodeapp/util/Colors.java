@@ -1,4 +1,4 @@
-package com.example.myqrcodeapp.util;
+package com.demo.myqrcodeapp.util;
 
 public enum Colors {
 

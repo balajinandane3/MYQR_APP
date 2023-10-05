@@ -1,6 +1,5 @@
-package com.example.myqrcodeapp.util;
+package com.demo.myqrcodeapp.util;
 
-import com.example.myqrcodeapp.controller.QRController;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
@@ -32,8 +31,7 @@ public class QRCodeReader {
 
             return result.getText();
         } catch (NotFoundException e) {
-            System.out.println("There is no QR code in the image");
-            logger.info("Exiting  decodeQRCode .... catch");
+            logger.info("Exiting  decodeQRCode .... catch ErrorCause: {},ErrorMessage: {}",e.getCause(),e.getMessage());
             return null;
         }
 
