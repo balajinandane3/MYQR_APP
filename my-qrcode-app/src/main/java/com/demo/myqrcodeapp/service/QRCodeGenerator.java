@@ -1,12 +1,12 @@
-package com.example.myqrcodeapp.service;
+package com.demo.myqrcodeapp.service;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-import com.example.myqrcodeapp.controller.QRController;
-import com.example.myqrcodeapp.util.Colors;
+import com.demo.myqrcodeapp.util.Colors;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
@@ -15,9 +15,9 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 
 @Component
@@ -26,10 +26,6 @@ public class QRCodeGenerator {
 
     @Value("${qr.file.extension}")
      String qrFileExtension;
-    @Value("${qr.on.color}")
-    String qrOnColor;
-    @Value("${qr.off.color}")
-    String qrOffColor;
 
     public  byte[] generateQRCodeImage(String text, int width, int height, String filePath)
             throws WriterException, IOException {
