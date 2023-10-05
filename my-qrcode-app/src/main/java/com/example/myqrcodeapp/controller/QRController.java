@@ -79,5 +79,11 @@ public class QRController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @GetMapping(value="/")
+    public ResponseEntity<String> getHello() {
+
+        return ResponseEntity.status(HttpStatus.OK).body("Welcome to My QrCode App....");
+    }
+
 }
 
