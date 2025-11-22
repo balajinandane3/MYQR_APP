@@ -24,47 +24,53 @@ public class QRController {
     String qrCodeImagePath;
     @Value("${qr.file.extension}")
     String qrFileExtension;
+
     @Autowired
     QRCodeGenerator qrCodeGenerator;
+
     Logger logger = LoggerFactory.getLogger(QRController.class);
+
     @PostMapping(value="/qrcode/",produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> createQRCode(@RequestBody QrData qrData) {
+
         logger.info("Inside getQRCode with qrData:{}",qrData);
-        byte[] image2 = new byte[0];
+        byte[] imageBytes = new byte[0];
+
         try {
             logger.info("calling qrCodeGenerator.generateQRCodeImage....");
-            image2 = qrCodeGenerator.generateQRCodeImage(qrData.getQrText(), qrData.getWidht(), qrData.getHeight(), qrCodeImagePath+qrData.getQrId());
-            logger.info("calling qrCodeGenerator.getQRCodeImage....");
-            image2=qrCodeGenerator.getQRCodeImage(qrData.getQrText(), qrData.getWidht(), qrData.getHeight());
+            imageBytes = qrCodeGenerator.generateQRCodeImage(
+                    qrData.getQrText(),
+                    qrData.getWidht(),
+                    qrData.getHeight(),
+                    qrCodeImagePath + qrData.getQrId()
+            );
+
         } catch (WriterException | IOException e) {
-            logger.info("Inside catch createQRCode Errorcause:{},ErroMessage:",e.getCause(),e.getMessage());
-
-            e.printStackTrace();
+            logger.error("Error in createQRCode:", e);
         }
-        logger.info("Exiting getQRCode....");
 
-        return ResponseEntity.status(HttpStatus.OK).body(image2);
+        return ResponseEntity.ok(imageBytes);
     }
+
 
     @GetMapping(value="/qrcode/{qrId}",produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> generateQRCode(@PathVariable("qrId") String qrId) {
-        logger.info("Inside generateQRCode ().... for qrId:{}",qrId);
+        logger.info("Inside generateQRCode().... for qrId: {}", qrId);
         byte[] image2 = new byte[0];
-        String preQrCode;
+
         try {
-            String filePath=qrCodeImagePath+qrId;
-            File file = new File(filePath+qrFileExtension);
-            if(file.exists())
+            File file = new File(qrCodeImagePath + qrId + qrFileExtension);
+
+            if (file.exists()) {
                 logger.info("File is present....");
                 image2 = QRCodeReader.decodeQRCodeCreated(file);
+            }
 
-        } catch (  IOException e) {
-            logger.info("Exception occured ErrorCause:  {},ErrorMessage:   {}",e.getCause(),e.getMessage());
-
-            e.printStackTrace();
+        } catch (IOException e) {
+            logger.error("Exception in generateQRCode:", e);
         }
-        logger.info("Exiting generateQRCode ()....");
-        return ResponseEntity.status(HttpStatus.OK).body(image2);
+
+        return ResponseEntity.ok(image2);
     }
 
     @GetMapping(value="/qrcode1/{text}/{width}/{height}",produces = MediaType.IMAGE_PNG_VALUE)
@@ -74,38 +80,36 @@ public class QRController {
             @PathVariable("height") int height) {
 
         byte[] image2 = new byte[0];
+
         try {
             image2 = qrCodeGenerator.getQRCodeImage(text, width, height);
-
         } catch (WriterException | IOException e) {
-            e.printStackTrace();
+            logger.error("Error in generateQRCode:", e);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(image2);
+
+        return ResponseEntity.ok(image2);
     }
 
     @GetMapping(value="/readqrcode/{qrId}")
     public ResponseEntity<String> readQRCode(@PathVariable("qrId") String qrId) {
-        String result="";
+        String result = "";
+
         try {
-            File file = new File(qrCodeImagePath+qrId+qrFileExtension);
-             result = QRCodeReader.decodeQRCode(file);
+            File file = new File(qrCodeImagePath + qrId + qrFileExtension);
+            result = QRCodeReader.decodeQRCode(file);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error in readQRCode:", e);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(result);
-    }
-    @GetMapping(value="/")
-    public ResponseEntity<String> getHello(@PathVariable("qrId") String qrId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body("Welcome to My QrCode App....");
+        return ResponseEntity.ok(result);
     }
 
-    @GetMapping(value="/")
+    @GetMapping("/")
     public ResponseEntity<String> getHello() {
-
-        return ResponseEntity.status(HttpStatus.OK).body("Welcome to My QrCode App....");
+        return ResponseEntity.ok("Welcome to My QrCode App....");
     }
 
 }
+
 

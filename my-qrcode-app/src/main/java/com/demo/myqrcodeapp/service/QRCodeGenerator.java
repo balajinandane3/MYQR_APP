@@ -27,18 +27,28 @@ public class QRCodeGenerator {
     @Value("${qr.file.extension}")
      String qrFileExtension;
 
-    public  byte[] generateQRCodeImage(String text, int width, int height, String filePath)
+    public byte[] generateQRCodeImage(String text, int width, int height, String filePath)
             throws WriterException, IOException {
-        logger.info("Inside generateQRCodeImage () .... text: {},filePath :{}",text,filePath);
+
+        logger.info("Inside generateQRCodeImage () .... text: {},filePath :{}", text, filePath);
+
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
-        Path path = FileSystems.getDefault().getPath(filePath+qrFileExtension);
-            MatrixToImageConfig con = new MatrixToImageConfig(Colors.WHITE.getArgb(), Colors.ORANGE.getArgb()) ;
 
-        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path,con);
+        // 1️⃣ Write the file to disk
+        Path path = FileSystems.getDefault().getPath(filePath + qrFileExtension);
+        MatrixToImageConfig con = new MatrixToImageConfig(Colors.WHITE.getArgb(), Colors.ORANGE.getArgb());
+        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path, con);
+
+        // 2️⃣ Convert QR to byte[] for API response
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream, con);
+
         logger.info("Exiting generateQRCodeImage ()");
-        return null;
+
+        return outputStream.toByteArray();
     }
+
 
 
     public  byte[] getQRCodeImage(String text, int width, int height) throws WriterException, IOException {
